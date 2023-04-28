@@ -1,5 +1,5 @@
 # In fact a single char, but python has no such type
-InputTy = str
+InputToken = str
 
-# A list of `InputTy`s
+# A list of `InputToken`s
 InputSeq = str

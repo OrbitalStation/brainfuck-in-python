@@ -1,3 +1,6 @@
+# Ideally, this module should not exist
+#   (probably not possible in Python)
+
 import code_getter
 import seq_looper
 import dispatcher

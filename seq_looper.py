@@ -1,31 +1,56 @@
 from copy import deepcopy
 from typing import Callable, Iterator
-from input_ty import InputTy
+from input_ty import InputToken
 
 
 class Command:
+    """
+    The base class of a command family
+    """
+
     pass
 
 
 class CommandGetCursor(Command):
-    def __init__(self, cb: Callable[[Iterator[InputTy]], None]):
+    """
+    Asks the executor to call `cb` with the current used input token iterator
+    """
+
+    def __init__(self, cb: Callable[[Iterator[InputToken]], None]):
         self.cb = cb
 
 
 class CommandSetCursor(Command):
-    def __init__(self, cb: Callable[[], Iterator[InputTy]]):
+    """
+    Asks the executor to set the current used input token iterator to a value returned by `cb`
+    """
+
+    def __init__(self, cb: Callable[[], Iterator[InputToken]]):
         self.cb = cb
 
 
-class CommandIgnoreCellsUntil(Command):
-    def __init__(self, cb: Callable[[InputTy], bool]):
+class CommandIgnoreTokensUntil(Command):
+    """
+    Asks the executor to start ignoring all the tokens until `cb` returns True
+    """
+
+    def __init__(self, cb: Callable[[InputToken], bool]):
         self.cb = cb
 
 
 Executor = Callable[[Command], None]
 
 
-def loop_through(seq: Iterator[InputTy], callback: Callable[[InputTy, Executor], None]):
+def loop_through(seq: Iterator[InputToken], callback: Callable[[InputToken, Executor], None]):
+    """
+    Loops through all the tokens of `seq`, calling `callback` on each one
+    Behaviour of this looping may be modified by sending commands to an executor
+        provided as an argument to `callback`
+
+    :param seq: the sequence to loop through
+    :param callback: a function to be called on each token
+    """
+
     do_ignore = False
     ignore_stop_cb = None
 
@@ -35,7 +60,7 @@ def loop_through(seq: Iterator[InputTy], callback: Callable[[InputTy, Executor],
             command.cb(deepcopy(seq))
         elif isinstance(command, CommandSetCursor):
             seq = command.cb()
-        elif isinstance(command, CommandIgnoreCellsUntil):
+        elif isinstance(command, CommandIgnoreTokensUntil):
             do_ignore = True
             ignore_stop_cb = command.cb
         else:

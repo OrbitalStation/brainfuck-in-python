@@ -27,7 +27,7 @@ def open_f(executor):
         executor(seq_looper.CommandGetCursor(container.push))
     else:
         met_opening_brackets_when_ignoring_all_commands = 1
-        executor(seq_looper.CommandIgnoreCellsUntil(stop_ignoring_cb))
+        executor(seq_looper.CommandIgnoreTokensUntil(stop_ignoring_cb))
 
 
 def close_f(executor):

@@ -2,6 +2,15 @@ from copy import deepcopy
 
 
 class _RestrictedInt(int):
+    """
+    A classic int with an upper bound when performing + and -
+
+    Examples:
+        RestrictedInt[2 ** 8] == Rust's u8
+        RestrictedInt[2 ** 16] == Rust's u16
+        RestrictedInt[2 ** 128] == Rust's u128
+    """
+
     def __init__(self, value=0):
         int.__init__(value)
         self._bound = None
